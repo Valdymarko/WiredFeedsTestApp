@@ -21,7 +21,7 @@ class FeedsTableViewCell: UITableViewCell {
         didSet{
             titleLabel.text = item.title
             descriptionLabel.text = item.description
-            dateLabel.text = item.pubDate
+            dateLabel.text = convertDate(date: item.pubDate)
             feedsImageView.image = loadFeedImage(urlString: item.imgUrlString)
         }
     }
@@ -35,6 +35,23 @@ class FeedsTableViewCell: UITableViewCell {
             return image!
         }
         return UIImage()
+    }
+    
+    
+    private func convertDate(date : String) -> String{
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        if let dt = dateFormatter.date(from: date) {
+            dateFormatter.timeZone = TimeZone.current
+            dateFormatter.dateFormat = "E, d MMM yyyy HH:mm:ss"
+            
+            return dateFormatter.string(from: dt)
+        } else {
+            return "Unknown date"
+        }
+        
     }
     
     private func resizeImage(image:UIImage, toTheSize size:CGSize)->UIImage{
